@@ -1,4 +1,7 @@
-using namespace z {
+#include "Simulation.hpp"
+#include "definitions.hpp"
+
+namespace z {
 
 Simulation::Simulation() {
 	
@@ -14,7 +17,8 @@ void Simulation::initGUI() {
 void Simulation::initSFML() {
 	// Match the sfgui and sfml window y dimension
 	sf::Vector2f requisition = guiWindow->GetRequisition();
-	requisition.y = std::max(RESY, requisition.y);
+	double temp = requisition.y;
+	requisition.y = std::max(RESY, temp);
 	guiWindow->SetRequisition(requisition);
 	
 	mainWindow = new sf::RenderWindow(sf::VideoMode(RESX + requisition.x, RESY), 
@@ -60,9 +64,8 @@ void Simulation::draw() {
 				case sf::Event::Closed:
 					mainWindow->close();
 					running = false;
-					*threadsPaused = false;
-					pauseCV1.notify_one();
-					pauseCV2.notify_one();
+					*logicPaused = false;
+					pauseCV.notify_one();
 					break;
 				case sf::Event::LostFocus:
 					input->windowFocused = false;
@@ -86,24 +89,17 @@ void Simulation::draw() {
 								
 		input->update();
 		
-		scaleBar->SetFraction(scaleFactor);
 		guiWindow->Update(1.0);
 		
 		mainWindow->clear();
 		
-		particles->draw(mainWindow);
+		// Draw organisms here
+		
 		input->draw();
-		mainWindow->draw(menuDivider, 2, sf::Lines);
 					
 		// Draw text/gui
 		if (statOverlay) {
-			std::string temp = std::to_string(scaleFactor);
-			temp.resize(4);
-			fps.setString(std::to_string((int)frameRateP) + "," + temp + "," + std::to_string((int)frameRateD) + "\n" + 
-										std::to_string(*loadBalance1) + "," + std::to_string(*loadBalance2) + "," + std::to_string(*loadBalance3)
-										+ "\n" + std::to_string(particles->pSize) + "," + std::to_string(particles->ballAlive)
-										+ "\n" + std::to_string(particles->bhV.size()) + "," + std::to_string(particles->bhAlive)
-										+ "\n" + std::to_string((int)particles->maxParticleVel));
+			fps.setString(std::to_string((int)frameRate) + "," + std::to_string((int)logicRate));
 			mainWindow->draw(fps);
 		}
 					
@@ -111,11 +107,28 @@ void Simulation::draw() {
 		
 		// Display drawn objects
 		mainWindow->display();
+		
+		// If vsync for logic is enabled, and logic is not paused, tell logic to calculate again.
+		if (*logicVSynced && !(*logicPaused)) {
+			pauseCV.notify_one();
+		}
 	}
 }
 
 void Simulation::logic() {
+	std::unique_lock<std::mutex> lock(pauseMutex);
 
+	while(running){
+		if (*logicPaused) {
+			pauseCV.wait(lock);
+			clockLogic.restart();
+		}
+	
+		// Do calculations here.
+		
+		elapsedTimeLogic = clockLogic.restart();
+		logicRate = FRAMERATE_FILTER*(1.0/elapsedTimeLogic.asSeconds()) + logicRate*(1.0 - FRAMERATE_FILTER);
+	}
 }
 
 

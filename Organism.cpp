@@ -3,9 +3,9 @@
 
 namespace z {
 
-Organism::Organism() {
+Organism::Organism(const std::vector<unsigned int> &netShape) {
+	brain = new NeuralNet(netShape);
 	id = getNewID();
-
 }
 
 

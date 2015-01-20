@@ -7,16 +7,16 @@ namespace z {
 
 class Organism {
 public:
-	const uint64_t id;
-	NeuralNet brain;
+	uint64_t id;
+	NeuralNet *brain;
 	
 	unsigned int energy;
 	double x, y;
 	double dx, dy;
 
-	Organism();
+	Organism(const std::vector<unsigned int> &netShape);
 	
-	setID();
+	uint64_t getNewID();
 };
 
 }

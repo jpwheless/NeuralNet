@@ -1,5 +1,4 @@
-
-#include "NeuralNet.hpp"
+#include "Simulation.hpp"
 
 using namespace std;
 
