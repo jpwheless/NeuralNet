@@ -1,0 +1,9 @@
+#ifndef DEFINITIONS_HPP
+#define DEFINITIONS_HPP
+
+#define RESX 1000
+#define RESY 1000
+
+#define FRAMERATE_FILTER 0.05
+
+#endif
