@@ -10,6 +10,7 @@
 #include <SFGUI/SFGUI.hpp>
 
 #include "Input.hpp"
+#include "Environment.hpp"
 
 #define FRAMERATE_FILTER 0.05
 
@@ -47,6 +48,7 @@ private:
 public:
 	sf::RenderWindow *mainWindow;
 	z::Input *input;
+	z::Environment environment;
 
 	Simulation();
 	void initGUI();

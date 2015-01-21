@@ -3,8 +3,8 @@
 
 namespace z {
 
-Simulation::Simulation() {
-	input = new z::Input();
+Simulation::Simulation() : environment(mainWindow) {
+	input = new z::Input(mainWindow);
 }
 
 // Create and configure sfgui widgets
@@ -118,6 +118,7 @@ void Simulation::draw() {
 		mainWindow->clear();
 		
 		// Draw organisms here
+		environment.draw();
 		
 		input->draw();
 					
@@ -148,7 +149,7 @@ void Simulation::logic() {
 			clockLogic.restart();
 		}
 	
-		// Do calculations here.
+		environment.update();
 		
 		elapsedTimeLogic = clockLogic.restart();
 		logicRate = FRAMERATE_FILTER*(1.0/elapsedTimeLogic.asSeconds()) + logicRate*(1.0 - FRAMERATE_FILTER);

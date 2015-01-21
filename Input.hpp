@@ -14,7 +14,7 @@ public:
 	bool mouseHeld;
 	bool mouseReleased;
 	
-	Input();
+	Input(sf::RenderWindow* window);
 		
 	void update();
 	void inputWheel(sf::Event &event);

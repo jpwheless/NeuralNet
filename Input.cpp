@@ -2,7 +2,8 @@
 
 namespace z {
 
-Input::Input() {
+Input::Input(sf::RenderWindow* window) {
+	mainWindow = window;
 	windowFocused = true; // Probably true, but no way to know
 	mousePressed = false;
 	mouseHeld = false;
