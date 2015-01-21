@@ -3,6 +3,10 @@
 #ifndef DEFINITIONS_HPP
 #define DEFINITIONS_HPP
 
+#define PI 3.14159265359
+#define PI2 6.28318530718
+#define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+
 #define RESX 1000.0
 #define RESY 1000.0
 
