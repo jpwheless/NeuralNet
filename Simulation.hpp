@@ -11,6 +11,8 @@
 
 #include "Input.hpp"
 
+#define FRAMERATE_FILTER 0.05
+
 namespace z {
 
 static std::mutex pauseMutex;
@@ -39,8 +41,8 @@ private:
 	// Threads
 	std::thread* drawThread;
 	std::thread* logicThread;
-	std::atomic<bool>* logicPaused = new std::atomic<bool>;
-	std::atomic<bool>* logicVSynced = new std::atomic<bool>;
+	std::atomic<bool> *logicPaused = new std::atomic<bool>;
+	std::atomic<bool> *logicVSynced = new std::atomic<bool>;
 
 public:
 	sf::RenderWindow *mainWindow;
